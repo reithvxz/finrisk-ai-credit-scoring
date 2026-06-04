@@ -3,131 +3,311 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FinRisk AI | Credit Analysis</title>
+    <title>FinRisk AI | Credit Scoring</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Outfit', 'sans-serif'] },
+                    colors: {
+                        brand: { 50: '#f0f9ff', 100: '#e0f2fe', 500: '#0ea5e9', 600: '#0284c7', 900: '#0c4a6e', 950: '#082f49' },
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-out',
+                        'slide-up': 'slideUp 0.6s ease-out forwards',
+                    },
+                    keyframes: {
+                        fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+                        slideUp: { '0%': { opacity: '0', transform: 'translateY(20px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } }
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; color: #1e293b; }
-        .card-shadow { box-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.05); }
-        /* Hilangkan spinner default browser */
+        body { background-color: #0f172a; color: #f8fafc; margin: 0; padding: 0; }
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .input-premium {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #f8fafc;
+            transition: all 0.3s ease;
+        }
+        .input-premium:focus {
+            background: rgba(15, 23, 42, 0.9);
+            border-color: #0ea5e9;
+            box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.15);
+            outline: none;
+        }
+        /* Range slider styling */
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 20px; width: 20px;
+            border-radius: 50%;
+            background: #0ea5e9;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(14, 165, 233, 0.5);
+        }
+        /* Hilangkan spinner input number */
         input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        
+        .result-card {
+            background: linear-gradient(145deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.9));
+        }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-4 md:p-8">
+<body class="min-h-screen flex items-stretch justify-center p-4 md:p-6 lg:p-8 relative overflow-hidden font-sans">
+    <!-- Background Decor -->
+    <div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-brand-600/20 blur-[120px] pointer-events-none"></div>
+    <div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-emerald-600/10 blur-[120px] pointer-events-none"></div>
 
-    <div class="w-full max-w-[900px] bg-white rounded-[32px] card-shadow overflow-hidden flex flex-col md:flex-row border border-slate-100">
+    <!-- Container Utama: Mengisi layar lebih penuh (95vw) -->
+    <div class="w-full max-w-[1600px] z-10 flex flex-col xl:flex-row gap-6 animate-fade-in items-stretch">
         
-        <div class="w-full md:w-[40%] bg-slate-900 p-10 text-white flex flex-col justify-between">
-            <div>
-                <div class="w-12 h-12 bg-blue-500 rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-blue-500/30">
-                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                </div>
-                <h1 class="text-3xl font-bold leading-tight">Smart Risk <br><span class="text-blue-400">Assessment.</span></h1>
-                <p class="text-slate-400 mt-4 text-sm leading-relaxed">Gunakan teknologi AI untuk memprediksi kelayakan kredit nasabah secara instan dan akurat.</p>
+        <!-- Left Section: Form -->
+        <div class="w-full xl:w-7/12 glass-panel rounded-3xl p-8 xl:p-12 shadow-2xl relative overflow-hidden flex flex-col justify-center">
+            <div class="absolute top-0 right-0 p-6 opacity-10">
+                <svg width="200" height="200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
             </div>
             
-            <div class="mt-8 space-y-4">
-                <div class="flex items-center space-x-3 text-xs text-slate-400">
-                    <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full"></span>
-                    <span>Model: Random Forest Classifier</span>
+            <div class="mb-8">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-500/10 text-brand-400 text-xs font-semibold tracking-wider uppercase mb-3 border border-brand-500/20">
+                    <span class="w-2 h-2 rounded-full bg-brand-500 animate-pulse"></span>
+                    FinRisk Engine
                 </div>
-                <div class="flex items-center space-x-3 text-xs text-slate-400">
-                    <span class="w-1.5 h-1.5 bg-blue-400 rounded-full"></span>
-                    <span>Accuracy: 94.2% Optimized</span>
-                </div>
+                <h1 class="text-4xl lg:text-5xl font-extrabold tracking-tight text-white mb-2">FinRisk <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 to-emerald-400">Credit Scoring</span></h1>
+                <p class="text-slate-400 text-base max-w-xl">Sistem evaluasi risiko kredit menggunakan AI & Analisis Debt-to-Income secara real-time.</p>
             </div>
-        </div>
 
-        <div class="w-full md:w-[60%] p-10 bg-white">
-            <form action="/" method="post" id="creditForm" class="space-y-6">
-                <div class="grid grid-cols-1 gap-6">
+            <form action="/" method="post" id="creditForm" class="space-y-6 relative z-10">
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Rencana Pinjaman -->
+                    <div class="md:col-span-2 lg:col-span-1 space-y-4 bg-slate-800/30 p-5 rounded-2xl border border-slate-700/50">
+                        <h3 class="text-sm font-semibold text-brand-400 uppercase tracking-widest pb-1 border-b border-slate-700/50">Pinjaman</h3>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-400 mb-2">Plafon Kredit (IDR)</label>
+                            <div class="relative">
+                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 font-semibold text-sm">Rp</span>
+                                <input type="text" id="display_plafon" placeholder="50.000.000" required
+                                    class="w-full pl-9 pr-3 py-3 input-premium rounded-xl font-semibold text-sm">
+                                <input type="hidden" name="plafon" id="real_plafon">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-400 mb-2">Tenor (Bulan)</label>
+                            <div class="relative">
+                                <select name="tenor" class="w-full px-4 py-3 input-premium rounded-xl font-semibold appearance-none cursor-pointer text-sm">
+                                    <option value="12">12 Bulan</option>
+                                    <option value="24">24 Bulan</option>
+                                    <option value="36" selected>36 Bulan</option>
+                                    <option value="48">48 Bulan</option>
+                                    <option value="60">60 Bulan</option>
+                                </select>
+                                <div class="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none text-slate-400">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Kapasitas Finansial -->
+                    <div class="md:col-span-2 lg:col-span-2 space-y-4 bg-slate-800/30 p-5 rounded-2xl border border-slate-700/50">
+                        <h3 class="text-sm font-semibold text-brand-400 uppercase tracking-widest pb-1 border-b border-slate-700/50">Kapasitas Finansial Pribadi</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="sm:col-span-2">
+                                <label class="block text-xs font-medium text-slate-400 mb-2">Pendapatan Bulanan Bersih (IDR)</label>
+                                <div class="relative">
+                                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 font-semibold text-sm">Rp</span>
+                                    <input type="text" id="display_pendapatan" placeholder="15.000.000" required
+                                        class="w-full pl-9 pr-3 py-3 input-premium rounded-xl font-semibold text-base">
+                                    <input type="hidden" name="pendapatan" id="real_pendapatan">
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-xs font-medium text-slate-400 mb-2">Usia Pemohon</label>
+                                <input type="number" name="usia" placeholder="28" min="21" max="70" required class="w-full px-4 py-3 input-premium rounded-xl font-semibold text-sm">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-xs font-medium text-slate-400 mb-2">Jumlah Tanggungan</label>
+                                <input type="number" name="tanggungan" placeholder="0" min="0" required class="w-full px-4 py-3 input-premium rounded-xl font-semibold text-sm">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profil Risiko -->
+                <div class="bg-slate-800/30 p-5 rounded-2xl border border-slate-700/50 space-y-5">
+                    <h3 class="text-sm font-semibold text-brand-400 uppercase tracking-widest pb-1 border-b border-slate-700/50">Profil Risiko & Riwayat</h3>
                     
-                    <div>
-                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Pendapatan Bulanan (IDR)</label>
-                        <div class="relative">
-                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-semibold">Rp</span>
-                            <input type="text" id="display_pendapatan" placeholder="Contoh: 15.000.000" 
-                                class="w-full pl-12 pr-4 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all font-semibold text-slate-700">
-                            <input type="hidden" name="pendapatan" id="real_pendapatan">
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Usia</label>
-                            <input type="text" name="usia" placeholder="25" class="w-full px-4 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:border-blue-500 outline-none font-semibold">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Tanggungan</label>
-                            <input type="text" name="tanggungan" placeholder="0" class="w-full px-4 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:border-blue-500 outline-none font-semibold text-center">
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Credit Score (BI Checking)</label>
-                        <input type="range" name="skor_lama" min="300" max="850" value="600" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-500" id="scoreRange">
-                        <div class="flex justify-between text-[10px] font-bold text-slate-400 mt-2">
+                    <div class="px-2">
+                        <label class="flex justify-between text-xs font-medium text-slate-400 mb-3">
+                            <span>Credit Score (BI Checking)</span>
+                            <span id="scoreValue" class="text-brand-400 font-bold text-sm bg-brand-500/10 px-2 py-0.5 rounded">600</span>
+                        </label>
+                        <input type="range" name="skor_lama" min="300" max="850" value="600" class="w-full h-2 bg-slate-700 rounded-lg appearance-none" id="scoreRange">
+                        <div class="flex justify-between text-[10px] text-slate-500 mt-2 font-medium">
                             <span>POOR (300)</span>
-                            <span id="scoreValue" class="text-blue-600 text-sm">600</span>
                             <span>EXCELLENT (850)</span>
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 gap-3">
-                        <select name="cicilan" class="w-full px-4 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:border-blue-500 outline-none font-medium text-sm appearance-none cursor-pointer">
-                            <option value="1">Riwayat Cicilan: Lancar ✅</option>
-                            <option value="0">Riwayat Cicilan: Macet/Baru ❌</option>
-                        </select>
-                        <select name="rumah" class="w-full px-4 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:border-blue-500 outline-none font-medium text-sm appearance-none cursor-pointer">
-                            <option value="1">Status Aset: Milik Sendiri 🏠</option>
-                            <option value="2">Status Aset: Masih KPR 🏦</option>
-                            <option value="0">Status Aset: Sewa/Kontrak 🏢</option>
-                        </select>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="relative">
+                            <label class="block text-[10px] font-medium text-slate-400 mb-1">Riwayat Cicilan</label>
+                            <select name="cicilan" class="w-full px-4 py-3 input-premium rounded-xl font-medium appearance-none cursor-pointer text-sm">
+                                <option value="1">Kolektibilitas Lancar (Kol 1)</option>
+                                <option value="0">Pernah Macet/Pemula</option>
+                            </select>
+                            <div class="absolute inset-y-0 right-0 top-[18px] flex items-center px-4 pointer-events-none text-slate-400">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </div>
+                        </div>
+                        <div class="relative">
+                            <label class="block text-[10px] font-medium text-slate-400 mb-1">Status Rumah</label>
+                            <select name="rumah" class="w-full px-4 py-3 input-premium rounded-xl font-medium appearance-none cursor-pointer text-sm">
+                                <option value="1">Milik Sendiri</option>
+                                <option value="2">Masih KPR</option>
+                                <option value="0">Sewa/Kontrak</option>
+                            </select>
+                            <div class="absolute inset-y-0 right-0 top-[18px] flex items-center px-4 pointer-events-none text-slate-400">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-2xl shadow-xl shadow-blue-600/20 transition-all active:scale-[0.98]">
-                    Analisis Sekarang
+                <button type="submit" class="w-full bg-brand-500 hover:bg-brand-400 text-white font-bold py-4 rounded-xl shadow-[0_0_20px_rgba(14,165,233,0.3)] transition-all active:scale-[0.98] text-lg">
+                    Jalankan Analisis Engine
                 </button>
             </form>
+        </div>
 
-            {% if prediction_text %}
-            <div class="mt-8 p-6 rounded-2xl border flex items-center justify-between" style="background: {{ color }}08; border-color: {{ color }}30;">
-                <div>
-                    <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Keputusan Akhir</p>
-                    <h3 class="text-xl font-extrabold mt-1" style="color: {{ color }}">{{ prediction_text }}</h3>
-                    <p class="text-[11px] text-slate-500 mt-1">Confidence: {{ probability }}</p>
+        <!-- Right Section: Result -->
+        <div class="w-full xl:w-5/12 flex flex-col justify-stretch">
+            {% if result %}
+                {% if result.status == 'ERROR' %}
+                <div class="glass-panel rounded-3xl p-8 border-t-4 border-amber-500 animate-slide-up h-full flex flex-col justify-center items-center text-center">
+                    <div class="w-16 h-16 bg-amber-500/20 rounded-full flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-2">Terjadi Kesalahan</h3>
+                    <p class="text-slate-400 text-base max-w-sm">{{ result.error_msg }}</p>
                 </div>
-                <div class="w-12 h-12 rounded-full flex items-center justify-center" style="background: {{ color }};">
-                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        {% if "DISETUJUI" in prediction_text %}
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
-                        {% else %}
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"></path>
-                        {% endif %}
-                    </svg>
+                {% else %}
+                <div class="result-card rounded-3xl p-1 shadow-2xl animate-slide-up h-full">
+                    <div class="bg-slate-900 rounded-[22px] p-8 lg:p-10 h-full flex flex-col border border-slate-700/50 relative overflow-hidden justify-center">
+                        <!-- Glow effect -->
+                        <div class="absolute top-0 right-0 w-40 h-40 bg-{{ result.color_class }}-500/20 blur-[60px] rounded-full"></div>
+                        <div class="absolute bottom-0 left-0 w-32 h-32 bg-brand-500/10 blur-[50px] rounded-full"></div>
+                        
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-10 z-10 gap-4">
+                            <div>
+                                <p class="text-[11px] font-bold uppercase tracking-widest text-slate-500 mb-2">Keputusan Sistem</p>
+                                <h2 class="text-4xl lg:text-5xl font-extrabold tracking-tight" style="color: {{ result.color_hex }}">{{ result.status }}</h2>
+                                <p class="text-sm font-medium text-slate-400 mt-2">Confidence Score: <span class="text-white bg-slate-800 px-2 py-1 rounded">{{ result.probability }}</span></p>
+                            </div>
+                            <div class="w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg flex-shrink-0" style="background: {{ result.color_hex }}20; border: 1px solid {{ result.color_hex }}40;">
+                                {% if result.status == "DISETUJUI" %}
+                                <svg class="w-10 h-10" style="color: {{ result.color_hex }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
+                                {% else %}
+                                <svg class="w-10 h-10" style="color: {{ result.color_hex }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="space-y-6 flex-grow z-10 flex flex-col justify-center">
+                            <div class="bg-slate-800/60 rounded-2xl p-5 border border-slate-700/50 flex justify-between items-center">
+                                <div>
+                                    <p class="text-xs text-slate-400 mb-1">Risk Category</p>
+                                    <p class="font-bold text-2xl" style="color: {{ result.color_hex }}">{{ result.risk_level }}</p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-xs text-slate-400 mb-1">Debt-to-Income</p>
+                                    <p class="font-bold text-2xl text-white">{{ result.dti_percent }}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-slate-800/60 rounded-2xl p-5 border border-slate-700/50">
+                                <p class="text-xs text-slate-400 mb-1">Estimasi Cicilan per Bulan</p>
+                                <p class="font-bold text-xl text-brand-300 mt-1">{{ result.cicilan_per_bulan }}</p>
+                            </div>
+                            
+                            <div class="bg-slate-800/60 rounded-2xl p-5 border border-slate-700/50 relative overflow-hidden">
+                                <div class="absolute right-0 top-0 w-24 h-full bg-emerald-500/5 skew-x-12"></div>
+                                <p class="text-xs text-slate-400 mb-1">Rekomendasi Plafon Maksimal</p>
+                                <p class="font-bold text-3xl text-emerald-400 tracking-tight">{{ result.max_plafon }}</p>
+                                <p class="text-[11px] text-slate-500 mt-2">*Saran optimal berdasarkan batas rasio DTI 40%</p>
+                            </div>
+
+                            {% if result.reasons %}
+                            <div class="mt-2 p-5 rounded-2xl bg-rose-500/10 border border-rose-500/20">
+                                <p class="text-sm font-bold text-rose-400 mb-3 flex items-center gap-2">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                                    Peringatan Sistem:
+                                </p>
+                                <ul class="list-disc pl-5 text-sm text-rose-300 space-y-2">
+                                    {% for reason in result.reasons %}
+                                    <li>{{ reason }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
                 </div>
-            </div>
+                {% endif %}
+            {% else %}
+                <div class="h-full w-full glass-panel rounded-3xl p-10 flex flex-col items-center justify-center text-center border-dashed border-2 border-slate-600/50 min-h-[500px]">
+                    <div class="w-24 h-24 bg-slate-800 rounded-full flex items-center justify-center mb-8 shadow-inner relative">
+                        <div class="absolute inset-0 rounded-full border-4 border-slate-700 border-t-brand-500 animate-spin" style="animation-duration: 3s;"></div>
+                        <svg class="w-10 h-10 text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-3">Panel Evaluasi Hasil</h3>
+                    <p class="text-slate-400 text-base max-w-sm leading-relaxed">Isi seluruh data profil finansial dan rencana pinjaman di samping. Tekan tombol analisis untuk memproses evaluasi risiko secara real-time.</p>
+                </div>
             {% endif %}
         </div>
     </div>
 
     <script>
-        const inputDisplay = document.getElementById('display_pendapatan');
-        const inputReal = document.getElementById('real_pendapatan');
+        function setupCurrencyInput(displayId, realId) {
+            const display = document.getElementById(displayId);
+            const real = document.getElementById(realId);
+            
+            display.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/[^0-9]/g, '');
+                real.value = value;
+                if (value) {
+                    e.target.value = parseInt(value).toLocaleString('id-ID');
+                }
+            });
+
+            if(display.value) {
+                display.dispatchEvent(new Event('input'));
+            }
+        }
+
+        setupCurrencyInput('display_plafon', 'real_plafon');
+        setupCurrencyInput('display_pendapatan', 'real_pendapatan');
+
         const scoreRange = document.getElementById('scoreRange');
         const scoreValue = document.getElementById('scoreValue');
-
-        inputDisplay.addEventListener('input', function(e) {
-            let value = e.target.value.replace(/[^0-9]/g, '');
-            inputReal.value = value;
-            if (value) {
-                e.target.value = parseInt(value).toLocaleString('id-ID');
-            }
-        });
-
+        
         scoreRange.addEventListener('input', function(e) {
             scoreValue.textContent = e.target.value;
+            if(e.target.value < 500) scoreValue.className = "text-rose-400 font-bold text-sm bg-rose-500/10 px-2 py-0.5 rounded";
+            else if(e.target.value < 650) scoreValue.className = "text-amber-400 font-bold text-sm bg-amber-500/10 px-2 py-0.5 rounded";
+            else scoreValue.className = "text-emerald-400 font-bold text-sm bg-emerald-500/10 px-2 py-0.5 rounded";
         });
     </script>
 </body>
